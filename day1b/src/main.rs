@@ -1,10 +1,9 @@
 use std::io::{BufRead, BufReader};
 use std::fs::File;
-use std::cmp;
 use std::collections::BinaryHeap;
 
 fn main() {
-    let mut f = BufReader::new(File::open("../day1a/input.txt").expect("open failed"));
+    let f = BufReader::new(File::open("../day1a/input.txt").expect("open failed"));
     let mut pq = BinaryHeap::new();
     let mut curr = 0;
     for line in f.lines().map(|l|l.unwrap()){
@@ -15,8 +14,8 @@ fn main() {
     }
 
     let mut sum = 0;
-    sum = sum + pq.pop().unwrap();
-    sum = sum + pq.pop().unwrap();
-    sum = sum + pq.pop().unwrap();
+    for _ in 0..3{
+        sum = sum + pq.pop().unwrap();
+    }
     print!("{}",sum)
 }
