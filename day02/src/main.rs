@@ -76,8 +76,6 @@ fn parse_outcome(c: Option<char> ) -> Game {
 fn score_2(outcome: Game, them: Move ) -> i32{
     let me = pick_my_move(outcome,&them);
     let score = score_1(&them, me);
-    println!("{:?}  {:?}  {:?} {}",outcome, me, them, score);
-
     return score
 }
 
