@@ -8,17 +8,16 @@ fn main() {
     BufReader::new(File::open("input.txt").expect("open failed"))
     .lines()
     .for_each(|line| match line.unwrap().as_ref() {
-        "" => (),
-        l if l[..2] == *" 1" => (),
+        l if l[0] == '[' => => {
+            parse_stack_row(l, &mut stacks);
+            parse_stack_row(l, &mut stacks2);
+        },
         l if l[..4] == *"move" => {
             let nums: Vec<usize> = l.split(' ').flat_map(|f| f.parse::<usize>()).collect();
             process_p1(l,&mut stacks,&nums);
             process_p2(l, &mut stacks2, &nums)
         },
-        stackDec => {
-            parse_stack_row(stackDec, &mut stacks);
-            parse_stack_row(stackDec, &mut stacks2);
-        }
+        _ => () 
     });
     print!("P1 ");
     for x in (0..9){
