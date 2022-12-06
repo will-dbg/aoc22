@@ -5,7 +5,9 @@ use std::collections::VecDeque;
 
 fn main() {
     let lines = BufReader::new(File::open("input.txt").expect("open failed"))
-    .lines().map(|l|l.unwrap()).collect::<Vec<String>>();
+        .lines()
+        .map(|l|l.unwrap())
+        .collect::<Vec<String>>();
     let line = &lines[0].chars().collect::<Vec<char>>();
     println!("part1: {}",find_unique_range(line, 4));
     println!("part2: {}",find_unique_range(line, 14));
@@ -20,8 +22,7 @@ fn find_unique_range(line : &Vec<char>, of_size : usize) -> usize{
             window.push_back(ch);
         }else{
             let mut iniq = HashSet::new();
-            window.iter().all( |x| iniq.insert(x));
-            if iniq.len() == of_size {
+            if  window.iter().all( |x| iniq.insert(x)) {
                 return i;
             }
             else{
