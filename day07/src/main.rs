@@ -40,16 +40,33 @@ fn main() {
         }
     }
 
-    let part1 = dirs.iter().fold(0, |sz,dir|
-        {let szz = dir.get_size(&dirs);
-        if szz < 100000 {
-            return sz+ szz;
+    let mut sizes = dirs.iter().map(|dir|dir.get_size(&dirs)).collect::<Vec<usize>>();
+    
+
+    let part1 = sizes.iter().fold(0, |sz,dir|
+        if *dir < 100000 {
+            return sz+ *dir;
         }
         else {return sz}
-    }
+    
     );
+    sizes.sort();
+
+    let part2 = sizes.iter().fold(0, |last,this|{
+        if *this < 3000000 {
+            return *this;
+        }
+        if last < 3000000 {
+            return last;
+        }
+        else {
+            return *this;
+        }
+    });
+
 
     println!("part1: {}",part1);
+    println!("part2: {}",part2);
 }
 
 #[derive(Debug)]
