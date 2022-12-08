@@ -8,7 +8,7 @@ fn main() {
     BufReader::new(File::open("input.txt").expect("open failed"))
     .lines()
     .for_each(|line| match line.unwrap().as_ref() {
-        l if l[0] == '[' => => {
+        l if l[0] == '[' => {
             parse_stack_row(l, &mut stacks);
             parse_stack_row(l, &mut stacks2);
         },
