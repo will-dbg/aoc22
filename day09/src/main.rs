@@ -5,30 +5,35 @@ use std::collections::HashSet;
 fn main() {
     let lines : Vec<String> = BufReader::new(File::open("input.txt").expect("open failed"))
     .lines()
-    .map(|l|l.unwrap()).collect();
+    .map(|l|l.unwrap()).collect();    
 
-    
-    let mut h = Point::new();
-    let mut t = h.clone();
-    let mut seen = HashSet::new();
-    seen.insert(h.clone());
-
-    let instrs :Vec<(&str,i32)>= lines.iter().map(|l|{
+    let instrs :Vec<(String,i32)>= lines.iter().map(|l|{
         let (direction, a) = l.split_once(" ").unwrap();
         let dist : i32 = a.parse().unwrap();
-        (direction,dist)
+        (direction.to_string(),dist)
     }).collect();
-
-    for (direction,dist) in instrs {
-        for _ in 0..dist {
-            update_head(direction, &mut h);
-            t = updated_tail(h,t);
-            seen.insert(t.clone());
-            
+    let mut pts : Vec<Point> = (0..10).map(|_|Point::new()).collect();
+    let mut seen = HashSet::new();
+    let mut seen2 = HashSet::new();
+    for (dir,dist) in instrs {
+        for _ in 0..dist{
+            update_head(&dir, &mut pts[0]);
+            for i in 1..10 {
+                updated_tail(pts[i-1], &mut pts[i]);
+                if i == 1 {
+                    seen.insert(pts[i].clone());
+                }
+                if i == 9 {
+                    seen2.insert(pts[i].clone());
+                }
+            }            
         }
     }
+    
     println!("part1: {} ",seen.len());
+    println!("part2: {} ",seen2.len());
 }
+
 
 fn update_head(direction: &str, h: &mut Point){
     match direction {
@@ -48,7 +53,7 @@ fn update_head(direction: &str, h: &mut Point){
     }
 }
 
-fn updated_tail(h: Point, mut t: Point) -> Point{
+fn updated_tail(h: Point, t:&mut Point){
     let dx = h.x-t.x;
     let dy = h.y-t.y;
 
@@ -68,11 +73,16 @@ fn updated_tail(h: Point, mut t: Point) -> Point{
             t.x += dx;
             t.y += dy/2;
         },
+        (2,2) => {
+            t.x += dx/2;
+            t.y += dy/2;
+        },
         _ => todo!()
     }
-    t
 }
 
+#[derive(Ord)]
+#[derive(PartialOrd)]
 #[derive(Hash, Eq, PartialEq)]
 #[derive(Clone, Copy, Debug)]
 struct Point{
