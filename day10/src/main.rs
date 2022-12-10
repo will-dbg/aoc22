@@ -8,7 +8,6 @@ fn main() {
     .map(|l|l.unwrap()).collect(); 
 
     let mut unpacked_ops : Vec<i32>  = Vec::new();
-    // lol
     for line in lines {
         match line.as_str() {
             "noop" => {
@@ -32,6 +31,7 @@ fn main() {
         acc.x_register += op;
         acc.i += 1;
 
+        // render screen
         let pix = if (x-1..x+2).contains(&((i-1)%40)) {'#'}else{'.'};
         if i % 40 == 0 {
             println!("{}",pix);
