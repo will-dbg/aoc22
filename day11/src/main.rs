@@ -1,8 +1,6 @@
-use std::default;
 use std::io::{BufRead, BufReader};
 use std::fs::File;
 use std::collections::VecDeque;
-//15390 low
 fn main() {
     let lines : Vec<String> = BufReader::new(File::open("input.txt").expect("open failed"))
     .lines()
@@ -16,7 +14,6 @@ fn solve(lines: &Vec<String>, div: usize, n_rounds : usize) -> usize{
     let mut monkeys : Vec<Monkey> = lines.chunks(7).map(|m|parse_monkey(m)).collect();
     let mut counts = vec![0;monkeys.len()];
     let m = monkeys.iter().map(|monkey| monkey.test).product();
-    println!("{}",m);
     (0..n_rounds).for_each(|_|round(&mut monkeys, &mut counts, div, m));
     counts.sort_unstable();
     counts.iter().rev().take(2).product()
