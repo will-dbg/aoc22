@@ -7,18 +7,20 @@ fn main() {
     
     let (heights,start,fin) = parse();
     
-    println!("part1 {:?}",calc_distance(&heights,start,fin));
+    println!("part1 {:?}",calc_distance(&heights,vec![start],fin));
 
     // this is far from optimal... but it works
-    let pt2 = heights.iter().filter(|(pt,lvl)| **lvl == 1)
-    .filter_map(|(pt,_)|calc_distance(&heights,*pt,fin)).min();
+    let pt2 = heights
+    .iter()
+    .filter(|(_,lvl)| **lvl == 1)
+    .map(|(pt,_)|*pt).collect();
 
-    println!("part2 {:?}",pt2);
+    println!("part2 {:?}",calc_distance(&heights,pt2,fin));
 }
 
-fn calc_distance(heights: &HashMap<Point,usize>,start: Point, finish : Point ) -> Option<usize>{
-    let mut search_edge: HashSet<Point> = vec![start].iter().cloned().collect();
-    let mut visited: HashSet<Point> = vec![start].iter().cloned().collect();
+fn calc_distance(heights: &HashMap<Point,usize>,start: Vec<Point>, finish : Point ) -> Option<usize>{
+    let mut search_edge: HashSet<Point> = start.iter().cloned().collect();
+    let mut visited: HashSet<Point> = start.iter().cloned().collect();
     let mut stepcost = 0;
 
     while !search_edge.is_empty(){
