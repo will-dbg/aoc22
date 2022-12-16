@@ -4,21 +4,32 @@ use std::cmp::Ordering;
 use std::vec;
 
 fn main() {
-    let p1 = BufReader::new(File::open("input.txt").expect("open failed"))
+    let mut packets = BufReader::new(File::open("input.txt").expect("open failed"))
     .lines()
     .map(|l|l.unwrap())
-    .collect::<Vec<String>>()
-    .chunks(3)
-    .map(|chunk|(parse_row(&chunk[0][1..chunk[0].len()]),parse_row(&chunk[1][1..chunk[1].len()])))
+    .filter(|l|l != "")
+    .map(|line|{let l = line.as_str(); return parse_row(&l[0..l.len()]); })
+    .collect::<Vec<ListElem>>();
+
+
+    let p1 = packets
+    .chunks(2)
     .enumerate()
-    .fold(0 as usize, |ct ,(s,(a,b))|{
-        return match a.cmp(&b) {
+    .fold(0 as usize, |ct ,(s,chunk)|{
+        return match chunk[0].cmp(&chunk[1]) {
             Ordering::Less => ct+s+1,
             _ => ct
         }
     });
 
-    println!("{}",p1);
+    println!("part1: {}",p1);
+
+    let n_two = packets.iter().filter(|p| p < &&ListElem::List(vec![ListElem::Num(2)])).count()+1;
+    let n_six = packets.iter().filter(|p| p < &&ListElem::List(vec![ListElem::Num(6)])).count()+2;
+
+    println!("part2: {:?}",n_two * n_six);
+
+    
 }
 
 
