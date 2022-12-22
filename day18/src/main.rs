@@ -14,8 +14,14 @@ fn main() {
     }   
     ).collect();
 
+    let p1 = count_free_faces(&cubes);
+    println!("part1: {}",p1);
+}
+
+
+fn count_free_faces(cubes : &Vec<Cube>) -> usize{
     let mut counts = HashMap::new();
-    for cube in &cubes{
+    for cube in cubes{
         let mut n = HashSet::new();
         for x in neighbour_cubes(cube){
             n.insert(x);
@@ -23,7 +29,7 @@ fn main() {
         counts.insert(cube, n);
     }
 
-    for cube in &cubes {
+    for cube in cubes {
         for neighbour in neighbour_cubes(cube){
             if let Some(c) = counts.get_mut(&neighbour){
                 c.remove(&cube);
@@ -31,8 +37,7 @@ fn main() {
         }
     }
 
-    let p1 = counts.values().fold(0, |a,y|a+ y.len());
-    println!("part1: {}",p1);
+    counts.values().fold(0, |a,y|a+ y.len())
 }
 
 const NEXT : [Cube; 6] = [
