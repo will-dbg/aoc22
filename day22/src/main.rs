@@ -22,36 +22,29 @@ fn main() {
             }
         }
     }
-    println!("w {}, h {}",w,h);
     let instructions = parse_instructions(lines.last().unwrap());
-    // println!("{:?}",instructions);
-    // for row in &map {
-    //     for cell in row {
-    //         print!("{:?}",cell);
-    //     }
-    //     println!()
-    // }
+    part_1(&map, &instructions, w, h);
+    
+}
 
+fn part_1(map : &Vec<Vec<Cell>>, instructions : &Vec<Instruction>, w: i32, h: i32){
     let mut pt:Point = (map[0].iter().enumerate().find(|(_,v)|**v == Cell::Open).unwrap().0 as i32,0);
     let mut hd = Heading::Right;
     for ins in instructions {
-        println!("{:?},{:?} {:?} {:?}",pt.0+1,pt.1+1,ins,hd);
         match ins {
-            
             Instruction::Turn(t) => {
-                hd = hd.turn(t);
+                hd = hd.turn(*t);
             },
             Instruction::Move(mut dist) => {
                 let mut last_open = pt;
                 while dist > 0 {
-                    let  (mut x, mut y)  = next(pt, hd);
-                    let xx = (x+w-1).rem_euclid(w-1);
-                    let yy = (y+h-1).rem_euclid(h-1);
+                    let  ( xx,  yy)= next(pt, hd,w,h);
+                    
                     let nxt_cell = map[yy as usize][xx as usize];
                     match nxt_cell {
-                        Cell::Wall => {pt=last_open;println!("hit a wall");break;},
-                        Cell::Open => {last_open = (xx,yy);pt = (xx,yy); dist-=1;println!("{:?}",pt);},
-                        Cell::__ => {pt = (xx,yy); println!("skip {:?}",pt);}
+                        Cell::Wall => {pt=last_open;break;},
+                        Cell::Open => {last_open = (xx,yy);pt = (xx,yy); dist-=1;},
+                        Cell::__ => {pt = (xx,yy);}
                     }
                 }
             }
@@ -66,13 +59,14 @@ fn main() {
     println!("part1: {:?}",1000* pt.1 + 4 * pt.0 + hd.value());
 }
 
-fn next(pt : Point, hd : Heading) -> Point{
-    match hd {
+fn next(pt : Point, hd : Heading, w: i32, h : i32) -> Point{
+    let  (xx, yy) = match hd {
         Heading::Up => (pt.0,pt.1-1),
         Heading::Right => (pt.0+1,pt.1),
         Heading::Down => (pt.0,pt.1+1),
         Heading::Left => (pt.0-1,pt.1)
-    }
+    };
+    ((xx+w-1).rem_euclid(w-1),(yy+h-1).rem_euclid(h-1))
 }
 
 fn parse_instructions(s: &str) -> Vec<Instruction>{
@@ -142,7 +136,7 @@ trait Value {
     fn from_value(v: i32) -> Self;
 }
 
-#[derive(Debug)]
+#[derive(Debug,Clone, Copy)]
 enum Direction{
     Left,
     Right
